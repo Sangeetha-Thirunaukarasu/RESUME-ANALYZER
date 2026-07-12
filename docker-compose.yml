@@ -1,0 +1,97 @@
+services:
+  # 1. Asynchronous API Gateway Tier (Custom Container)
+  fastapi_app:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: production_fastapi_gateway
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - REDIS_URL=${REDIS_URL}
+      - QUEUE_NAME=${QUEUE_NAME}
+      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - mongodb_cluster_node
+      - redis_broker_node
+    networks:
+      - production_network_mesh
+
+  # 2. High-Performance Background Worker Cluster (Custom Container)
+  arq_worker:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: production_arq_worker_node
+    restart: always
+    command: arq app.worker.WorkerSettings
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - MONGO_DB_NAME=${MONGO_DB_NAME}
+      - REDIS_URL=${REDIS_URL}
+      - QUEUE_NAME=${QUEUE_NAME}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    depends_on:
+      - redis_broker_node
+      - mongodb_cluster_node
+    networks:
+      - production_network_mesh
+    deploy: # <-- Added OOM protection limits block limits
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+
+  # 3. High-Throughput Memory Broker (Pre-defined Container)
+  redis_broker_node:
+    image: redis:7.2-alpine
+    container_name: production_redis_broker
+    restart: always
+    ports:
+      - "6379:6379"
+    networks:
+      - production_network_mesh
+
+  # 4. Document Data Store Layer (Pre-defined Container + Volumetric Storage)
+  mongodb_cluster_node:
+    image: mongo:6.0
+    container_name: production_mongodb_datastore
+    restart: always
+    ports:
+      - "27017:27017" # Exposed to machine for GUI tools like Compass
+    volumes:
+      # Maps  actual local disk to the container for permanent safety
+      - production_mongodb_persistent_volume:/data/db
+    networks:
+      - production_network_mesh
+
+  # 5. Production Static Frontend Edge Client Tier (Custom Container)
+  react_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: production_react_frontend_client
+    restart: always
+    ports:
+      - "3000:80"
+    depends_on:
+      - fastapi_app
+    networks:
+      - production_network_mesh
+
+# Private, secure network space for internal container-to-container talking
+networks:
+  production_network_mesh:
+    driver: bridge
+
+# Permanent storage definition block
+volumes:
+  production_mongodb_persistent_volume:
+    driver: local

@@ -1,0 +1,20 @@
+/* 1. Global Core Tailwind Directives (Must remain strictly at the root level) */
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+/* 2. Isolated Custom Layer Modifiers */
+@layer base {
+  body {
+    background-color: #020617; /* Matches true strict bg-slate-950 color profiles */
+    color: #f8fafc;            /* text-slate-50 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Core User Selection Blueprint Text Markers */
+  ::selection {
+    background-color: rgba(6, 182, 212, 0.2); /* selection:bg-cyan-500/20 */
+    color: #67e8f9;                            /* selection:text-cyan-300 */
+  }
+}
