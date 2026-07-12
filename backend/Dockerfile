@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Upgrade pip and copy dependencies file
 RUN pip install --no-cache-dir --upgrade pip
-COPY requirements.txt .
+COPY backend/requirements.txt ./requirements.txt
 
 # Compile wheels to a localized temporary directory caching layer
 RUN pip wheel --no-cache-dir --wheel-dir /build/wheels -r requirements.txt
@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 # Copy pre-compiled python wheels from builder stage 
 COPY --from=builder /build/wheels /wheels
-COPY --from=builder /build/requirements.txt .
+COPY --from=builder /build/requirements.txt ./requirements.txt
 
 # Install dependencies from wheel cache instantly without hitting web networks
 RUN pip install --no-cache-dir --no-index --find-links=/wheels -r requirements.txt \
