@@ -44,5 +44,6 @@ EXPOSE 8000
 
 
 #  native uvicorn multiprocessing worker loops with robust Gunicorn process orchestration handles
-CMD ["gunicorn", "app.main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000", "--timeout", "120"]
+# Uses the explicit shell form to execute Gunicorn and Arq concurrently in the background
+CMD ["/bin/sh", "-c", "gunicorn app.main:app --workers 2 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:8000 --timeout 120 & arq app.worker.WorkerSettings"]
 
