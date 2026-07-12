@@ -20,7 +20,7 @@ RUN pip wheel --no-cache-dir --wheel-dir /build/wheels -r requirements.txt
 # --- Stage 2: Final minimal execution image runtime ---
 FROM python:3.11-slim
 
-WORKDIR /app
+WORKDIR /workspace
 
 # Crucial Production Requirement: Install libmagic system binary hooks 
 # to allow python-magic to sniff true binary MIME files securely
@@ -37,11 +37,9 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels -r requirements.t
     && rm -rf /wheels requirements.txt
 
 # Copy backend application package source arrays code into workspace
-COPY . .
+COPY backend/ ./backend/
 
-# Expose FastAPI core gateway port map boundary limits
-EXPOSE 8000
-
+ENV PYTHONPATH=/workspace/backend
 
 #  native uvicorn multiprocessing worker loops with robust Gunicorn process orchestration handles
 # Uses the explicit shell form to execute Gunicorn and Arq concurrently in the background
