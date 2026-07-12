@@ -1,0 +1,31 @@
+# Prerequisites & Compilations
+*.egg-info/
+__pycache__/
+.pytest_cache/
+*.pyc
+
+# Environments & Private Credentials
+.env
+../.env
+.venv
+venv/
+ENV/
+
+# Local Dependency Caches
+node_modules/
+frontend/node_modules/
+backend/build/
+backend/wheels/
+
+# Static Output Builds
+frontend/dist/
+frontend/build/
+
+# Persistent Diagnostics and Log Directories
+*.log
+backend/logs/
+npm-debug.log*
+
+# Operating System System Files
+.DS_Store
+Thumbs.db
