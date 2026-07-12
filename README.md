@@ -1,4 +1,4 @@
-# AI Resume Matcher Ecosystem
+# AI Resume Analyzer 
 
 An enterprise-grade, privacy-first asynchronous web application designed to evaluate resumes against corporate job descriptions. The platform parses modern document formats (.pdf, .docx), cleanses candidate files of sensitive metadata via an automated Personally Identifiable Information (PII) masking engine, and evaluates skills compatibility utilizing a high-availability dual-LLM fallback architecture.
 
