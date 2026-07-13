@@ -109,7 +109,7 @@ async def run_resume_analysis(ctx, task_id: str, file_bytes: bytes, job_descript
             # --- TIER 2: Secondary Fallback with Google Gemini ---
             logger.info("Executing Gemini Fallback pipeline via gemini-2.5-flash...")
             gemini_response = gemini_client.models.generate_content(
-                model='gemini-3.1-flash-lite',
+                model=settings.GEMINI_MODEL_NAME,
                 contents=f"Resume Text Content:\n{resume_text}\n\nTarget Job Description Requirements:\n{job_description}",
                 config=types.GenerateContentConfig(
                     system_instruction="You are an elite corporate technical recruiter. Analyze the candidate's resume strictly against the target job description details.",

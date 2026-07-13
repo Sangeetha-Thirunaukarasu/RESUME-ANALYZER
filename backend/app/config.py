@@ -5,6 +5,7 @@ import os
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Resume Analyzer"
     ENV: str = "production"
+    GEMINI_MODEL_NAME: str = "gemini-2.5-flash"
     
     # Swapped validation_alias out for explicit env field properties to guarantee Docker safety
     MONGO_URI: str = Field("mongodb://production_mongodb_datastore:27017", env="MONGO_URI")
