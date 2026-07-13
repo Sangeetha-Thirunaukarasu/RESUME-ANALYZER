@@ -6,7 +6,7 @@ import {
 import CircularScore from '../components/CircularScore';
 import FeedbackCard from '../components/FeedbackCard';
 
-const API_BASE_URL = "https://resume-matcher-ui.onrender.com/api/v1";
+const API_BASE_URL = "https://resume-analyzer-api.onrender.com/api/v1";
 
 export const Workspace: React.FC = () => {
   const [selectedFileName, setSelectedFileName] = useState<string | null>(null);
